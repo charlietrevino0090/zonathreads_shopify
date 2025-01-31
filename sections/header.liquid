@@ -72,26 +72,56 @@
   }
 </style>
 
-{%- style -%}
-  .header {
-    padding: {{ section.settings.padding_top | times: 0.5 | round: 0 }}px 3rem {{ section.settings.padding_bottom | times: 0.5 | round: 0 }}px 3rem;
-  }
+{% javascript %}
+// Existing header JavaScript remains unchanged
+{% endjavascript %}
 
-  .section-header {
-    position: sticky; /* This is for fixing a Safari z-index issue. PR #2147 */
-    margin-bottom: {{ section.settings.margin_bottom | times: 0.75 | round: 0 }}px;
+{%- style -%}
+  .header-wrapper {
+    background-image: url({{ 'header-background.svg' | asset_url }});
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 120px;  /* Default height for mobile */
+    width: 100%;
+    position: relative;
+    z-index: 2;
   }
 
   @media screen and (min-width: 750px) {
-    .section-header {
-      margin-bottom: {{ section.settings.margin_bottom }}px;
+    .header-wrapper {
+      min-height: 180px;  /* Medium screens */
     }
   }
 
   @media screen and (min-width: 990px) {
-    .header {
-      padding-top: {{ section.settings.padding_top }}px;
-      padding-bottom: {{ section.settings.padding_bottom }}px;
+    .header-wrapper {
+      min-height: 250px;  /* Larger screens */
+    }
+  }
+
+  /* Ensure header content remains visible on background */
+  .header {
+    padding: {{ section.settings.padding_top | times: 0.5 | round: 0 }}px 3rem {{ section.settings.padding_bottom | times: 0.5 | round: 0 }}px 3rem;
+    position: relative;
+    z-index: 3;
+    {% if section.settings.color_scheme == 'scheme-1' %}
+      /* Add text contrast for better visibility on custom background */
+      color: #ffffff;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    {% endif %}
+  }
+
+  /* Maintain visibility of icons and text */
+  .header__icon .icon {
+    {% if section.settings.color_scheme == 'scheme-1' %}
+      filter: brightness(0) invert(1);
+    {% endif %}
+  }
+
+  @media screen and (max-width: 749px) {
+    .header-wrapper {
+      background-position: center left;  /* Adjust mobile background position */
     }
   }
 {%- endstyle -%}
